@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:tvf/uploadfiles/uploadimage.dart';
 import 'pickfiles/pickimage.dart';
 import 'package:tvf/pickfiles/pickvideos.dart';
+import 'package:tvf/setdata.dart';
+import 'package:tvf/setdata/setdata.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
@@ -15,130 +17,140 @@ import 'package:tvf/multipick.dart';
 import 'package:random_string/random_string.dart';
 import 'package:tvf/pickfiles/pickimage.dart';
 
-
-String  post_title="";
-String  author_name="";
-String  description="";
-
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+void main(){
+  runApp(MaterialApp(
+        home: homescreen(),
+  ));
+}
+class homescreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(),
-    );
+  _homescreenState createState() => _homescreenState();
+}
+
+class _homescreenState extends State<homescreen> {
+  final  authorcontrol=TextEditingController();
+  void initState(){
+    new Directory('storage/emulated/0/tvf/').create(recursive: true);
+    randomfilenames=randomAlphaNumeric(4);
+    flname=File('storage/emulated/0/tvf/$randomfilenames.txt');
+
   }
-}
-
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text("CREATE POST"),
-        actions: <Widget>[
-          RaisedButton(
-            color: Colors.teal,
-            child: Text("UPLOAD IMAGE"),
-            onPressed: (){
-              if(imagepicked){
-                Navigator.push(context,MaterialPageRoute(builder: (context) => uploadimage()));
-              }
-            },
-          )
-        ],
+        appBar: AppBar(
+          backgroundColor: Colors.blue,
+          title: Text("CREATE POST"),
+          actions: <Widget>[
+            RaisedButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(18.0),
+                  side: BorderSide(color: Colors.blue)
+              ),
+              color: Colors.blue[800],
+              child: Text("UPLOAD IMAGE"),
+              onPressed: (){
+                if(imagepicked){
+                  Navigator.push(context,MaterialPageRoute(builder: (context) => uploadimage()));
+                }
+              },
+            )
+          ],
 
-      ),
-      body:
-      Center(
-          child: Padding(padding: EdgeInsets.all(16),
-            child: Container(
-              child: ListView(
-                children: <Widget>[
-                  Container(
-                      color: Colors.teal,
-                      height: 50,
-                      width: MediaQuery. of(context). size. width,
-                      child:Card(
-                        child:  TextField(
-                          decoration: InputDecoration(
-                              hintText: "  TITLE"
-                          ),
-                          onChanged: (val){
-                            post_title=val;
-                            print(post_title);
-                          }
-                          ,
-                        ),
-                      )
+        ),
+        body:
+        Center(
+            child: Padding(padding: EdgeInsets.all(16),
+                child: Container(
+                  child: ListView(
+                    children: <Widget>[
+                      Container(
 
-                  ),
-                  SizedBox(height: 8),
-                  Container(
-                      color: Colors.teal,
-                      height: 50,
-                      width: MediaQuery. of(context). size. width,
-                      child:
-                      Card(
-                        child:  TextField(
-                        decoration: InputDecoration(
-                            hintText: "  AUTHOR NAME"
-                        ),
-                            onChanged: (val){
-                             author_name=val;
-                             print(author_name);
-                            }
-                  ),
-          )
-                  ),
-                  SizedBox(height: 8),
-                  Container(
-                      color: Colors.teal,
-                      height: 120,
-                      width: MediaQuery. of(context). size. width,
-                      child:
-                      Card(
-                        child:  TextField(
-                          maxLines: 10,
-                          decoration: InputDecoration(
-                              hintText: "  DESCRIPTION"
-                          ),
-                            onChanged: (val){
-                            description=val;
-                            print(description);
-                            }
-                          ),
+                          height: 50,
+                          width: MediaQuery. of(context). size. width,
+                          child:Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(18.0),
+                                side: BorderSide(color: Colors.blue)
+                            ),
+                            child:  TextField(
 
-                         )
-                        ),
-                  SizedBox(height: 8),
-                  Container(
-                      color: Colors.teal,
-                      height: 160,
-                      width: MediaQuery. of(context). size. width,
-                      child:Card(
-                        child: Row(
-                          children: <Widget>[
-                            Center(
+                              decoration: InputDecoration(
+                                  hintText: "  TITLE"
+                              ),
+                              onChanged: (val){
+                                settitle(val);
+                                print(settitle.post_title);
+                              }
+                              ,
+                            ),
+                          )
+
+                      ),
+                      SizedBox(height: 8),
+                      Container(
+
+                          height: 50,
+                          width: MediaQuery. of(context). size. width,
+                          child:
+                          Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(18.0),
+                                  side: BorderSide(color: Colors.blue)
+                              ),
+                            child:  TextField(
+                              controller: authorcontrol,
+
+                                decoration: InputDecoration(
+                                    hintText: "  AUTHOR NAME"
+                                ),
+                                onChanged: (val){
+                                 setauthor(val);
+                                 print(setauthor.author);
+                                }
+
+                            ),
+                          )
+                      ),
+                      SizedBox(height: 8),
+                      Container(
+
+                          height: 120,
+                          width: MediaQuery. of(context). size. width,
+                          child:
+                          Card(
+
+                            shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(18.0),
+                           side: BorderSide(color: Colors.blue)
+                            ) ,
+                            child:  TextField(
+                                maxLines: 10,
+                                decoration: InputDecoration(
+                                    hintText: "  DESCRIPTION"
+                                ),
+                                onChanged: (val){
+                                  setdesc(val);
+                                  print(setdesc.desc);
+                                }
+                            ),
+
+                          )
+                      ),
+                      SizedBox(height: 8),
+                      Container(
+
+                          height: 160,
+                          width: MediaQuery. of(context). size. width,
+                          child:Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(18.0),
+                                side: BorderSide(color: Colors.blue)
+                            ),
+                            child:Center(
                                 child:selectedimage==null? Text("Image not Attached")
                                     :Container(
+                                  padding: EdgeInsets.only(left:10,right:10,bottom:10,top: 10),
                                     child: new GridView.builder(
                                         itemCount: selectedimage.length,
                                         gridDelegate:
@@ -152,37 +164,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                     )
                                 )
                             ),
-                            Center(
-                                child:selectedvideo==null? Text("Video not Attached")
-                                    :Container(
-                                    child: new GridView.builder(
-                                        itemCount: selectedvideo.length,
-                                        gridDelegate:
-                                        new SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 3),
-                                        itemBuilder: (BuildContext context, int index) {
-                                          return Container(
-                                              child:Text(selectedvideo[index].toString())
-                                          );
-                                        }
-                                    )
-                                )
-                            ),
-
-                          ],
-                        )
+                          )
                       )
-                  )
-                ],
-              ),
+                    ],
+                  ),
+                )
             )
-          )
 
 
 
-      ),
+        ),
         floatingActionButtonLocation:
-      FloatingActionButtonLocation.endDocked,
+        FloatingActionButtonLocation.endDocked,
 
         floatingActionButton: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -190,13 +183,13 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Padding(padding: EdgeInsets.only(top: 10),
-                  child:FloatingActionButton(
-                      onPressed: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => pickimage()));
+                child:FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(context,MaterialPageRoute(builder: (context) => pickimage()));
 
-                      },
+                  },
                   child: Icon(Icons.image),
-                    heroTag: null,
+                  heroTag: null,
                 ),
               ),
               Padding(padding: EdgeInsets.only(top: 10),

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tvf/main.dart';
 import 'package:tvf/uploadfiles/uploadimage.dart';
 
 void main(){
@@ -14,6 +15,8 @@ class pickimage extends StatefulWidget {
 
 List <File> selectedimage;
 bool imagepicked=false;
+bool removepicked=false;
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 class _pickimageState extends State<pickimage> {
   getimage() async{
     //Navigator.push(context,MaterialPageRoute(builder: (context) => mp()));
@@ -24,45 +27,61 @@ class _pickimageState extends State<pickimage> {
       imagepicked=true;
       print("Imagepicked=${true}");
     });
+    print(selectedimage);
   }
 
+
+  void initState(){
+   getimage();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Imagepicker"),
-        actions: <Widget>[ RaisedButton(
-          child: Text("SELECT IMAGE"),
-          onPressed: (){
-            getimage();
-          },
-        ),
-          RaisedButton(
-            child: Text("UPLOAD IMAGE"),
-            onPressed: (){
-              if(imagepicked){
-                Navigator.push(context,MaterialPageRoute(builder: (context) => uploadimage()));
-              }
-            },
-          )
-        ],
-
-      ),
+             ),
       body: Center(
           child:selectedimage==null? Text("Image is not loader")
               :Container(
-            child: new GridView.builder(
-                itemCount: selectedimage.length,
-                gridDelegate:
-                new SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3),
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                      child:Image.file(selectedimage[index], fit: BoxFit.contain)
-                  );
+              child: removepicked==false? new GridView.builder(
+                  itemCount: selectedimage.length,
+                  gridDelegate:
+                  new SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                        child:Card(
+                          child: Image.file(selectedimage[index],fit: BoxFit.contain),
+                        )
+                    );
+                  }
+              ): new GridView.builder(
+          itemCount: selectedimage.length,
+              gridDelegate:
+              new SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3),
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  color: Colors.blue,
+                    child:Card(
 
-                }
-                  )
+                      child: new InkWell(
+    child: Image.file(selectedimage[index],fit: BoxFit.contain),
+                        onTap:() {
+                          selectedimage.removeAt(index);
+                          print(selectedimage);
+                          setState(() {
+
+                          });
+                        }
+                      )
+
+                    )
+                );
+              }
+          )
+
           )
       ),
         floatingActionButtonLocation:
@@ -74,9 +93,28 @@ class _pickimageState extends State<pickimage> {
             children: <Widget>[
               Padding(padding: EdgeInsets.only(top: 10),
                 child:FloatingActionButton(
-
                   onPressed: () {
-                    Navigator.push(context,MaterialPageRoute(builder: (context) => pickimage()));
+                    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+                      duration: const Duration(seconds: 4),
+
+                        content:Text("Top on the image to remove")
+
+                    ));
+                    setState(() {
+                      print("rmove picked true");
+                      removepicked=true;
+                    });
+                  },
+                  child: Icon(Icons.clear),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                  heroTag: null,
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(top: 10),
+
+                child:FloatingActionButton(
+                  onPressed: () {
+                    Navigator.pop(context);
                   },
                   child: Icon(Icons.check),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
@@ -84,6 +122,7 @@ class _pickimageState extends State<pickimage> {
                   heroTag: null,
                 ),
               ),
+
 
 
             ],
