@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:tvf/uploadfiles/uploadimage.dart';
 import 'pickfiles/pickimage.dart';
 import 'package:tvf/pickfiles/pickvideos.dart';
-import 'package:tvf/setdata.dart';
+
 import 'package:tvf/setdata/setdata.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:image_picker/image_picker.dart';
