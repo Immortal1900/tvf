@@ -4,10 +4,11 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf/uploadfiles/uploadimage.dart';
+import 'package:video_player/video_player.dart';
 import 'pickfiles/pickimage.dart';
 import 'package:tvf/pickfiles/pickvideos.dart';
-
 import 'package:tvf/setdata/setdata.dart';
+import 'package:tvf/pickfiles/pickvideos.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
@@ -35,6 +36,15 @@ class _homescreenState extends State<homescreen> {
     flname=File('storage/emulated/0/tvf/$randomfilenames.txt');
 
   }
+  Future initializeplayer() async{
+    print("INITIALIZEPLAYER CALLED");
+    print(selectedvideo.length);
+    for(int i=0;i<selectedvideo.length;i++){
+      vcontroller.add(VideoPlayerController.file(selectedvideo[i])..initialize().then((_){setState(() {  });}));
+      vcontroller[i].play();
+      vcontroller[i].setVolume(0);
+      print(vcontroller[i]);
+    }}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,7 +149,6 @@ class _homescreenState extends State<homescreen> {
                       ),
                       SizedBox(height: 8),
                       Container(
-
                           height: 160,
                           width: MediaQuery. of(context). size. width,
                           child:Card(
@@ -164,9 +173,49 @@ class _homescreenState extends State<homescreen> {
                                     )
                                 )
                             ),
+
                           )
-                      )
-                    ],
+                      ),
+                                    FutureBuilder(builder:( BuildContext context, AsyncSnapshot snapshot){
+                                      if(videopicked){
+                                        initializeplayer();
+                                      }
+                                      return Container(
+                                          height: 160,
+                                          width: MediaQuery. of(context). size. width,
+                                          child:Card(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: new BorderRadius.circular(18.0),
+                                                side: BorderSide(color: Colors.blue)
+                                            ),
+                                            child:Center(
+                                                child:selectedvideo==null? Text("VIDEO is not SELECTED")
+                                                    :Container(
+                                                    child: new GridView.builder(
+                                                        itemCount: selectedvideo.length,
+                                                        gridDelegate:
+                                                        new SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisCount: 3),
+                                                        itemBuilder: (BuildContext context, int index) {
+                                                          return Container(
+                                                            child:vcontroller[index].value.initialized
+                                                                ?AspectRatio(
+                                                              aspectRatio:vcontroller[index].value.aspectRatio ,
+                                                              child: VideoPlayer(vcontroller[index]),
+                                                            )
+                                                                :Container()
+                                                            ,
+                                                          );
+                                                        }
+                                                    )
+                                                )
+                                            )
+
+                                          )
+                                      ) ;
+                                    })
+
+                           ],
                   ),
                 )
             )
