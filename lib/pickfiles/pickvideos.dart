@@ -29,7 +29,7 @@ class _pickvideoState extends State<pickvideo> {
         appBar: AppBar(
           title: Text("Imagepicker"),
           actions: <Widget>[ RaisedButton(
-            child: Text("SELECT IMAGE"),
+            child: Text("SELECT VIDEO"),
             onPressed: (){
               getimage();
             },

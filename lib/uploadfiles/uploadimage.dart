@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tvf/crud.dart';
@@ -28,9 +30,8 @@ class _uploadimageState extends State<uploadimage> {
   // ignore: must_call_super
   void initState(){
     uploadimage();
+    print("UPLOAD IMAGE CALLED");
   }
-
-
 
   uploadimage() async{
     print(selectedimage);
@@ -39,28 +40,31 @@ class _uploadimageState extends State<uploadimage> {
         isloading=true;
       });
       for(int i=0;i<selectedimage.length;i++){
+        print("IMAGE UPLOAD STARTED");
         if(selectedimage!=null){
           print(1);
           StorageReference firebasStorageRef=FirebaseStorage.instance.ref().child("blogposts").child("UID")
               .child("${randomAlphaNumeric(9)}.jpg");
           print(2);
           final StorageUploadTask uploadTask=firebasStorageRef.putFile(selectedimage[i]);
-
           print(3);
           print("UPLOAD STARTED");
           downloadurl=await(await uploadTask.onComplete).ref.getDownloadURL();
           downloadurlarr=downloadurlarr+" "+downloadurl;
           print(4);
+          print("IMAGE UPLOAD FINSIHED");
         }
         else{
           print("Image not selected");
         }
+
         print("CONCAT URL IS $downloadurlarr");
       }
       for(int i=0;i<selectedvideo.length;i++){
+        print("VIDEO UPLOAD STARTED");
         if(selectedvideo!=null){
           print(1);
-          StorageReference firebasStorageRef=FirebaseStorage.instance.ref().child("blogposts").child("UID")
+          StorageReference firebasStorageRef=FirebaseStorage.instance.ref().child("blogposts").child("UID").child("videos")
               .child("${randomAlphaNumeric(9)}.mp4");
           print(2);
           final StorageUploadTask uploadTask=firebasStorageRef.putFile(selectedvideo[i]);
@@ -69,6 +73,7 @@ class _uploadimageState extends State<uploadimage> {
           downloadvurl=await(await uploadTask.onComplete).ref.getDownloadURL();
           downloadvurlarr=downloadvurlarr+" "+downloadvurl;
           print(4);
+          print("VIDEO UPLOAD FINISHED");
         }
         else{
           print("Video not selected");
@@ -85,15 +90,16 @@ class _uploadimageState extends State<uploadimage> {
       catch(e){
         print("Error on uploading txt $e");
       }
-
+      print("ALL UPLOAD FINISHED");
       print("Concat URL IS $downloadurlarr");
-      Map <String,String> blogmap={
+      Map <String,dynamic> blogmap={
         "title":settitle.post_title,
         "authorname":setauthor.author,
         "desctexturl":txtdownloadurl,
         "description":setdesc.desc,
         "imageurls":downloadurlarr,
-       "videourls":downloadurlarr
+       "videourls":downloadvurlarr,
+        "position":crudMethods.newscount,
       };
 
 
