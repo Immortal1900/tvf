@@ -22,6 +22,7 @@ import 'package:tvf/pickfiles/pickimage.dart';
 void main(){
   runApp(MaterialApp(
         home: homescreen(),
+      debugShowCheckedModeBanner: false
   ));
 }
 class homescreen extends StatefulWidget {
